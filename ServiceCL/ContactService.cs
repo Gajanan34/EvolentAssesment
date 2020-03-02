@@ -2,6 +2,7 @@
 using ServiceCL;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -12,6 +13,11 @@ namespace ServiceCL
 {
     public class ContactService : IContactService
     {
+        string APIEndpoint = string.Empty;
+        public ContactService()
+        {
+            APIEndpoint = Convert.ToString(ConfigurationManager.AppSettings["EvolentProjectAssesmentWebAPIEndpoint"]);
+        }
         public IEnumerable<Contact> getAllContacts()
         {
             IEnumerable<Contact> contacts = null;
@@ -19,7 +25,7 @@ namespace ServiceCL
             {
                 using (var client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri("http://localhost/EvolentProjectAssesmentAPI/api/contact/");
+                    client.BaseAddress = new Uri(APIEndpoint);
 
                     var responseTask = client.GetAsync("GetAllContact");
                     responseTask.Wait();
@@ -50,7 +56,7 @@ namespace ServiceCL
             {
                 using (var client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri("http://localhost/EvolentProjectAssesmentAPI/api/contact/");
+                    client.BaseAddress = new Uri(APIEndpoint);
                     var postTask = client.PostAsJsonAsync<Contact>("addcontact", contact);
                     postTask.Wait();
                     var result = postTask.Result;
@@ -75,7 +81,7 @@ namespace ServiceCL
             {
                 using (var client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri("http://localhost/EvolentProjectAssesmentAPI/api/contact/");
+                    client.BaseAddress = new Uri(APIEndpoint);
                     var responseTask = client.GetAsync("editcontact/" + id.ToString());
                     responseTask.Wait();
                     var result = responseTask.Result;
@@ -100,7 +106,7 @@ namespace ServiceCL
             {
                 using (var client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri("http://localhost/EvolentProjectAssesmentAPI/api/contact/");
+                    client.BaseAddress = new Uri(APIEndpoint);
 
                     var postTask = client.PostAsJsonAsync<Contact>("editcontact", contact);
                     postTask.Wait();
@@ -124,7 +130,7 @@ namespace ServiceCL
             {
                 using (var client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri("http://localhost/EvolentProjectAssesmentAPI/api/contact/");
+                    client.BaseAddress = new Uri(APIEndpoint);
                     var deleteTask = client.GetAsync("deletecontact/" + id);
                     deleteTask.Wait();
                     var result = deleteTask.Result;
